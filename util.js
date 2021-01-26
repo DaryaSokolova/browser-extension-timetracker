@@ -1,4 +1,4 @@
-const urlContainer = 
+window.urlContainer = 
 {
     //"javascript.ru" : 0,
     //"learn.javascript.ru" : 0,
