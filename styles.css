@@ -1,4 +1,4 @@
-#myUL 
+.container
    {
     list-style-type: none;
        padding: 0;
@@ -6,7 +6,7 @@
        width: 300px;
     }
     
-#myUL li a 
+.item 
     {
       border: 1px solid #ddd;
       margin-top: -1px;
@@ -19,7 +19,7 @@
       font-family: ‘Noto Sans’, sans-serif;
     }
     
-#myUL li a:hover:not(.header) 
+    .item:hover
     {
        background-color: #eee;
     }

@@ -16,7 +16,7 @@ const decorateTime = (seconds) => {
 }
 
 const siteItem = (hostname, seconds, href) => `<li>
-<a href="${href}" target="_blank">
+<a class="item" href="${href}" target="_blank">
   ${hostname} : ${decorateTime(seconds)}
 </a>
 </li>`
