@@ -23,17 +23,16 @@ const getHotname = () => {
 
             try {
                 const { hostname, href } = new URL(url);
-                if ((hostname === 'extensions')||(hostname === 'bodjmonnkcegkkiofjpbliihjpkipdif')||(hostname === 'newtab')) {
-                    resolve({ hostname: 'режим разработчика', href: 'https://www.google.ru/', });
-                }
-                else {
+                if ((hostname === 'extensions') || (hostname === 'bodjmonnkcegkkiofjpbliihjpkipdif') || (hostname === 'newtab')) {
+                    resolve({ hostname: 'режим разработчика', href: 'https://www.google.com/', });
+                } else {
                     resolve({ hostname, href });
                 }
 
             } catch (error) {
                 resolve({
                     hostname: 'режим разработчика',
-                    href: 'https://www.google.ru/',
+                    href: 'https://www.google.com/',
                 });
             }
 
@@ -51,8 +50,7 @@ const intervalId = setInterval(() => {
                 ...urlContainer[hostname],
                 seconds: urlContainer[hostname].seconds + 1,
             };
-        }
-        else {
+        } else {
             urlContainer[hostname] = {
                 href: siteObj.href,
                 seconds: 0,
@@ -65,4 +63,3 @@ const intervalId = setInterval(() => {
     })
 }, 1000);
 //clearInterval(intervalId);
-

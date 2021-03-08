@@ -7,7 +7,7 @@ const decorateTime = (seconds) => {
     hours = Math.floor(seconds / 60 / 60);;
     minutes = Math.floor(seconds / 60) - (hours * 60);;
     seconds = seconds % 60;
-    
+
     minutes = minutes < 10 ? `0${minutes}` : minutes;
     hours = hours < 10 ? `0${hours}` : hours;
     seconds = seconds < 10 ? `0${seconds}` : seconds;
@@ -28,4 +28,3 @@ const urlContainer = backgroundWindow.urlContainer || { 'test': 4 };
 for (let key in urlContainer) {
     list.innerHTML += siteItem(key, urlContainer[key].seconds, urlContainer[key].href);
 }
-
