@@ -1,5 +1,37 @@
 const list = document.getElementById('myUL');
 
+
+list.addEventListener('click', clickHandler);
+
+function clickHandler(e) {
+
+    if (e.target.type === 'checkbox') {
+        markAsLazy(e.target.id);
+    }
+
+    console.dir(e.target);
+}
+
+function markAsLazy(key) {
+    chrome.storage.local.get(['myContainer'], function (result) {
+        const urlContainer = result.myContainer;
+
+        updUrlContainer = {
+            ...urlContainer,
+            [key]: {
+                ...urlContainer[key],
+                isLazy: true,
+            }
+        }
+        console.log(updUrlContainer);
+
+        chrome.storage.local.set({ 'myContainer': updUrlContainer }, render());
+
+    });
+
+}
+
+
 const decorateTime = (seconds) => {
     let minutes = parseInt(seconds / 60, 10);
     let hours = parseInt(minutes / 60, 10);
@@ -15,18 +47,18 @@ const decorateTime = (seconds) => {
     return `:${hours}:${minutes}:${seconds}`
 }
 
-const checkbox = (isVisible) => {
-    if (isVisible) {
-        return `<input type="checkbox" name="" id="">`
+const checkbox = (isLazy, key) => {
+    if (!isLazy) {
+        return `<input type="checkbox" class="checkbox" name="" id="${key}">`
     }
     return '';
 }
 //почитать про обработчик событий js
 // повесить его на чекбокс - понять какой конкретно элемент из списака мы взяли - зайти в храрнилище, найти его, изменить его, остальное не испортить и все сохранить.
 
-const siteItem = (hostname, seconds, href, isVisible) => `<li>
-${checkbox(isVisible)}
-<a class="item ${true ? '' : 'item-red'}" href="${href}" target="_blank">
+const siteItem = (hostname, seconds, href, isLazy) => `<li>
+${checkbox(isLazy, hostname)}
+<a class="item ${isLazy ? 'item-red' : ''}" href="${href}" target="_blank">
   ${hostname} : ${decorateTime(seconds)}
 </a>
 </li>`
@@ -34,12 +66,19 @@ ${checkbox(isVisible)}
 //const backgroundWindow = chrome.extension.getBackgroundPage();
 //const urlContainer = backgroundWindow.urlContainer || { 'test': 4 };
 
-chrome.storage.local.get(['myContainer'], function (result) {
-    const urlContainer = result.myContainer;
 
-    for (let key in urlContainer) {
-        if (key !== 'режим разработчика') {
-            list.innerHTML += siteItem(key, urlContainer[key].seconds, urlContainer[key].href);
+const render = () => {
+    list.innerHTML = "";
+    chrome.storage.local.get(['myContainer'], function (result) {
+        const urlContainer = result.myContainer;
+
+        for (let key in urlContainer) {
+            if (key !== 'режим разработчика') {
+                list.innerHTML += siteItem(key, urlContainer[key].seconds, urlContainer[key].href, urlContainer[key].isLazy);
+            }
         }
-    }
-});
+    });
+}
+
+
+render();
