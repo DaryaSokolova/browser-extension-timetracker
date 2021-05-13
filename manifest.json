@@ -1,20 +1,25 @@
 {
     "manifest_version": 2,
     "name": "Избранные сайты",
-    "description": "Мои избранные сайты.",
+    "description": "Мое время потрачено на.. ",
     "version": "1.0",
+
     "icons": {
         "16": "icon.png",
         "32": "icon.png",
         "48": "icon.png",
         "128": "icon.png"
     },
+
     "background": {
         "page": "background.html"
     },
+
     "permissions": [
-        "tabs"
+        "tabs",
+        "storage"
     ],
+
     "browser_action": {
         "default_icon": "icon.png",
         "default_title": " Избранные сайты ",

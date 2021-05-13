@@ -15,16 +15,31 @@ const decorateTime = (seconds) => {
     return `:${hours}:${minutes}:${seconds}`
 }
 
-const siteItem = (hostname, seconds, href) => `<li>
-<a class="item" href="${href}" target="_blank">
+const checkbox = (isVisible) => {
+    if (isVisible) {
+        return `<input type="checkbox" name="" id="">`
+    }
+    return '';
+}
+//почитать про обработчик событий js
+// повесить его на чекбокс - понять какой конкретно элемент из списака мы взяли - зайти в храрнилище, найти его, изменить его, остальное не испортить и все сохранить.
+
+const siteItem = (hostname, seconds, href, isVisible) => `<li>
+${checkbox(isVisible)}
+<a class="item ${true ? '' : 'item-red'}" href="${href}" target="_blank">
   ${hostname} : ${decorateTime(seconds)}
 </a>
 </li>`
 
-const backgroundWindow = chrome.extension.getBackgroundPage();
-const urlContainer = backgroundWindow.urlContainer || { 'test': 4 };
+//const backgroundWindow = chrome.extension.getBackgroundPage();
+//const urlContainer = backgroundWindow.urlContainer || { 'test': 4 };
 
+chrome.storage.local.get(['myContainer'], function (result) {
+    const urlContainer = result.myContainer;
 
-for (let key in urlContainer) {
-    list.innerHTML += siteItem(key, urlContainer[key].seconds, urlContainer[key].href);
-}
+    for (let key in urlContainer) {
+        if (key !== 'режим разработчика') {
+            list.innerHTML += siteItem(key, urlContainer[key].seconds, urlContainer[key].href);
+        }
+    }
+});

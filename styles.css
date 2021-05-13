@@ -17,6 +17,10 @@
     font-family: ‘Noto Sans’, sans-serif;
 }
 
+.item-red{
+    background-color: red;
+}
+
 .item:hover {
     background-color: #eee;
 }
