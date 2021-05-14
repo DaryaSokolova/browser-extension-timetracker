@@ -19,7 +19,8 @@
 
 .site-card{
     background-color: antiquewhite;
-    border: brown solid 2px;
+    border: rgba(194, 0, 0, 0.685) solid 2px;
+    padding: 10px;
 }
 
 .item-red{

@@ -1,3 +1,4 @@
+const text = document.getElementById('relationOfCounts');
 const list = document.getElementById('myUL');
 
 document.getElementById('clear').addEventListener('click', () => {
@@ -5,7 +6,7 @@ document.getElementById('clear').addEventListener('click', () => {
         list.innerHTML = "";
     });
 
-    window.location.reload();
+    render();
 }
 );
 
@@ -13,11 +14,11 @@ list.addEventListener('click', clickHandler);
 
 function clickHandler(e) {
 
-    if ((e.target.type === 'checkbox') && (e.target.name === 'one')) {
+    if ((e.target.type === 'button') && (e.target.name === 'one')) {
         markAsLazy(e.target.id);
     }
 
-    if ((e.target.type === 'checkbox') && (e.target.name === 'two')) {
+    if ((e.target.type === 'button') && (e.target.name === 'two')) {
         markAsNotLazy(e.target.id);
     }
 
@@ -38,7 +39,7 @@ function markAsLazy(key) {
         }
         //console.log(updUrlContainer);
 
-        chrome.storage.local.set({ 'myContainer': updUrlContainer }, render());
+        chrome.storage.local.set({ 'myContainer': updUrlContainer }, () => render());
 
     });
 
@@ -57,7 +58,7 @@ function markAsNotLazy(key) {
         }
         //console.log(updUrlContainer);
 
-        chrome.storage.local.set({ 'myContainer': updUrlContainer }, render());
+        chrome.storage.local.set({ 'myContainer': updUrlContainer }, () => render());
 
     });
 }
@@ -109,9 +110,9 @@ const decorateTime = (seconds) => {
 
 const checkbox = (isLazy, key) => {
     if (!isLazy) {
-        return `Да :)) <input type="checkbox" class="checkbox" name="one" id="${key}"> Это время потрачено зря?`
+        return `Да :)) <input type="button" value="🤖"  name="one" id="${key}"> Это время потрачено зря?`
     }
-    return `Даа! <input type="checkbox" class="checkbox" name="two" id="${key}"> Это время проведено с пользой?`;
+    return ` Даа! <input type="button" value="💚" name="two" id="${key}"> Это время проведено с пользой?`;
 }
 
 const siteItem = (hostname, seconds, href, isLazy) => `<li class="site-card">
@@ -164,15 +165,18 @@ const render = () => {
 
         let relationOfCounts = (countLazy > 0 && countAll > 0) ? Math.trunc(countLazy / (countAll) * 100) : 0;
 
-        const text = document.getElementById('relationOfCounts');
         text.innerHTML = `${countLazy} из ${countAll} сайтов отвлекали тебя от работы,
         а это ${relationOfCounts} % твоего бесценного времени.`;
+
 
     });
 }
 
-//const updInfo = setInterval(() => {
-//    window.location.reload();
-//}, 3000);
+const updInfo = setInterval(() => {
+    render();
+}, 3000);
+
+
+
 
 render();
