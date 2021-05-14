@@ -89,7 +89,7 @@ function sortByTime(urlContainer) {
         return 0;
     });
 
-    console.log(arr);
+    //console.log(arr);
     return arr;
 }
 
@@ -130,10 +130,10 @@ const render = () => {
     chrome.storage.local.get(['myContainer'], function (result) {
         const urlContainer = result.myContainer;
 
-        console.log(urlContainer);
+        //console.log(urlContainer);
         //проработать сортировку вложенных объектов
         const sortedUrls = sortByTime(urlContainer);
-        console.log(sortedUrls);
+        //console.log(sortedUrls);
 
         sortedUrls.forEach(urlObj => {
             if (urlObj.hostname !== 'режим разработчика') {
@@ -151,19 +151,22 @@ const render = () => {
         // }
         // Даша
 
-        let countLazy = 0;
-        let countAll = 0;
+        let countLazy = 0; let countLazyTime = 0;
+        let countAll = 0; let countAllTime = 0;
         for (let key in urlContainer) {
             if (urlContainer[key].isLazy === true) {
+                countLazyTime += urlContainer[key].seconds;
                 countLazy++;
             }
 
             if (key !== 'режим разработчика') {
                 countAll++;
+                countAllTime += urlContainer[key].seconds;
             }
         }
 
-        let relationOfCounts = (countLazy > 0 && countAll > 0) ? Math.trunc(countLazy / (countAll) * 100) : 0;
+
+        let relationOfCounts = (countLazy > 0 && countAll > 0) ? Math.trunc(countLazyTime / (countAllTime) * 100) : 0;
 
         text.innerHTML = `${countLazy} из ${countAll} сайтов отвлекали тебя от работы,
         а это ${relationOfCounts} % твоего бесценного времени.`;

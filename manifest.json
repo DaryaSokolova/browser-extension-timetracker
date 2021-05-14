@@ -1,14 +1,14 @@
 {
     "manifest_version": 2,
-    "name": "Избранные сайты",
-    "description": "Мое время потрачено на.. ",
+    "name": "Полезная статистика",
+    "description": "Мое время потрачено на.. Собираю статистику о твоей продуктивности.",
     "version": "1.0",
 
     "icons": {
-        "16": "icon.png",
-        "32": "icon.png",
-        "48": "icon.png",
-        "128": "icon.png"
+        "16": "search.png",
+        "32": "search.png",
+        "48": "search.png",
+        "128": "search.png"
     },
 
     "background": {
@@ -21,8 +21,8 @@
     ],
 
     "browser_action": {
-        "default_icon": "icon.png",
-        "default_title": " Избранные сайты ",
+        "default_icon": "search.png",
+        "default_title": " Полезная статистика ",
         "default_popup": "popup.html"
     }
 }
