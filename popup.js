@@ -131,7 +131,6 @@ const render = () => {
         const urlContainer = result.myContainer;
 
         //console.log(urlContainer);
-        //проработать сортировку вложенных объектов
         const sortedUrls = sortByTime(urlContainer);
         //console.log(sortedUrls);
 
@@ -142,14 +141,11 @@ const render = () => {
 
         });
 
-
-
         // for (let key in urlContainer) {
         //     if (key !== 'режим разработчика') {
         //         list.innerHTML += siteItem(key, urlContainer[key].seconds, urlContainer[key].href, urlContainer[key].isLazy);
         //     }
         // }
-        // Даша
 
         let countLazy = 0; let countLazyTime = 0;
         let countAll = 0; let countAllTime = 0;
