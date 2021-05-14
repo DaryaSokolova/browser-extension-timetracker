@@ -1,5 +1,4 @@
 const IS_DEBUG = false;
-window.urlContainer = {};
 
 const getHotname = () => {
     return new Promise((resolve, reject) => {
@@ -34,22 +33,22 @@ const getHotname = () => {
 const intervalId = setInterval(() => {
     getHotname().then(siteObj => {
         chrome.storage.local.get(['myContainer'], function (result) {
-            const urlContainer = result.myContainer;
-            console.log(urlContainer);
+            const urlContainer = result.myContainer || {};
+            console.log(result);
 
 
             const { hostname } = siteObj;
 
             if (hostname in urlContainer) {
-                // urlContainer[mess] += 1;
                 urlContainer[hostname] = {
                     ...urlContainer[hostname],
-                    seconds: urlContainer[hostname].seconds + 1,
+                    seconds: urlContainer[hostname].seconds + 2,
                 };
             } else {
                 urlContainer[hostname] = {
                     href: siteObj.href,
                     seconds: 0,
+                    isLazy: false,
                 };
             }
 
@@ -61,5 +60,5 @@ const intervalId = setInterval(() => {
         });
 
     })
-}, 1000);
+}, 2000);
 //clearInterval(intervalId);

@@ -1,16 +1,29 @@
 const list = document.getElementById('myUL');
 
+document.getElementById('clear').addEventListener('click', () => {
+    chrome.storage.local.clear(() => {
+        list.innerHTML = "";
+    });
+
+    window.location.reload();
+}
+);
 
 list.addEventListener('click', clickHandler);
 
 function clickHandler(e) {
 
-    if (e.target.type === 'checkbox') {
+    if ((e.target.type === 'checkbox') && (e.target.name === 'one')) {
         markAsLazy(e.target.id);
     }
 
-    console.dir(e.target);
+    if ((e.target.type === 'checkbox') && (e.target.name === 'two')) {
+        markAsNotLazy(e.target.id);
+    }
+
+    //console.dir(e.target);
 }
+
 
 function markAsLazy(key) {
     chrome.storage.local.get(['myContainer'], function (result) {
@@ -23,7 +36,7 @@ function markAsLazy(key) {
                 isLazy: true,
             }
         }
-        console.log(updUrlContainer);
+        //console.log(updUrlContainer);
 
         chrome.storage.local.set({ 'myContainer': updUrlContainer }, render());
 
@@ -31,6 +44,53 @@ function markAsLazy(key) {
 
 }
 
+function markAsNotLazy(key) {
+    chrome.storage.local.get(['myContainer'], function (result) {
+        const urlContainer = result.myContainer;
+
+        updUrlContainer = {
+            ...urlContainer,
+            [key]: {
+                ...urlContainer[key],
+                isLazy: false,
+            }
+        }
+        //console.log(updUrlContainer);
+
+        chrome.storage.local.set({ 'myContainer': updUrlContainer }, render());
+
+    });
+}
+
+function sortByTime(urlContainer) {
+
+    let arr = [];
+
+    for (let key in urlContainer) {
+        let tempObject = {
+            hostname: key,
+            seconds: urlContainer[key].seconds,
+            href: urlContainer[key].href,
+            isLazy: urlContainer[key].isLazy
+        };
+
+        arr.push(tempObject);
+    }
+
+    arr.sort(function (x, y) {
+        var category = "seconds"
+        if (x[category] < y[category]) {
+            return -1;
+        }
+        if (x[category] > y[category]) {
+            return 1;
+        }
+        return 0;
+    });
+
+    console.log(arr);
+    return arr;
+}
 
 const decorateTime = (seconds) => {
     let minutes = parseInt(seconds / 60, 10);
@@ -44,41 +104,75 @@ const decorateTime = (seconds) => {
     hours = hours < 10 ? `0${hours}` : hours;
     seconds = seconds < 10 ? `0${seconds}` : seconds;
 
-    return `:${hours}:${minutes}:${seconds}`
+    return `: ${hours}:${minutes}:${seconds}`
 }
 
 const checkbox = (isLazy, key) => {
     if (!isLazy) {
-        return `<input type="checkbox" class="checkbox" name="" id="${key}">`
+        return `Да :)) <input type="checkbox" class="checkbox" name="one" id="${key}"> Это время потрачено зря?`
     }
-    return '';
+    return `Даа! <input type="checkbox" class="checkbox" name="two" id="${key}"> Это время проведено с пользой?`;
 }
-//почитать про обработчик событий js
-// повесить его на чекбокс - понять какой конкретно элемент из списака мы взяли - зайти в храрнилище, найти его, изменить его, остальное не испортить и все сохранить.
 
-const siteItem = (hostname, seconds, href, isLazy) => `<li>
-${checkbox(isLazy, hostname)}
-<a class="item ${isLazy ? 'item-red' : ''}" href="${href}" target="_blank">
-  ${hostname} : ${decorateTime(seconds)}
-</a>
+const siteItem = (hostname, seconds, href, isLazy) => `<li class="site-card">
+    ${checkbox(isLazy, hostname)}
+    <a class="item ${isLazy ? 'item-red' : ''}" href="${href}" target="_blank">
+    ${hostname} : ${decorateTime(seconds)}
+    </a>
 </li>`
 
 //const backgroundWindow = chrome.extension.getBackgroundPage();
 //const urlContainer = backgroundWindow.urlContainer || { 'test': 4 };
-
 
 const render = () => {
     list.innerHTML = "";
     chrome.storage.local.get(['myContainer'], function (result) {
         const urlContainer = result.myContainer;
 
+        console.log(urlContainer);
+        //проработать сортировку вложенных объектов
+        const sortedUrls = sortByTime(urlContainer);
+        console.log(sortedUrls);
+
+        sortedUrls.forEach(urlObj => {
+            if (urlObj.hostname !== 'режим разработчика') {
+                list.innerHTML += siteItem(urlObj.hostname, urlObj.seconds, urlObj.href, urlObj.isLazy);
+            }
+
+        });
+
+
+
+        // for (let key in urlContainer) {
+        //     if (key !== 'режим разработчика') {
+        //         list.innerHTML += siteItem(key, urlContainer[key].seconds, urlContainer[key].href, urlContainer[key].isLazy);
+        //     }
+        // }
+        // Даша
+
+        let countLazy = 0;
+        let countAll = 0;
         for (let key in urlContainer) {
+            if (urlContainer[key].isLazy === true) {
+                countLazy++;
+            }
+
             if (key !== 'режим разработчика') {
-                list.innerHTML += siteItem(key, urlContainer[key].seconds, urlContainer[key].href, urlContainer[key].isLazy);
+                countAll++;
             }
         }
+
+        let relationOfCounts = (countLazy > 0 && countAll > 0) ? Math.trunc(countLazy / (countAll) * 100) : 0;
+
+        const text = document.getElementById('relationOfCounts');
+        text.innerHTML = `${countLazy} из ${countAll} сайтов отвлекали тебя от работы,
+        а это ${relationOfCounts} % твоего бесценного времени.`;
+
     });
 }
 
+//const updInfo = setInterval(() => {
+//    window.location.reload();
+//}, 3000);
 
 render();
